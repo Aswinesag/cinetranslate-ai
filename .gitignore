@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+
+# Virtual environment
+venv/
+.env
+
+# Model weights / checkpoints
+checkpoints/
+models/
+*.bin
+*.safetensors
+*.pt
+*.ckpt
+
+# HuggingFace cache
+.cache/
+huggingface/
+
+# Datasets
+data/
+*.parquet
+
+# Logs
+logs/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
