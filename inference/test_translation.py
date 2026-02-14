@@ -1,36 +1,35 @@
 import torch
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, BitsAndBytesConfig
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 from peft import PeftModel
 
-base_model = "facebook/m2m100_418M"
-lora_path = "checkpoints/lora_subtitles"
+BASE_MODEL = "google/mt5-small"   # or your actual base model
+LORA_PATH = "checkpoints/lora_subtitles"
 
-bnb_config = BitsAndBytesConfig(
-    load_in_4bit=True,
-    bnb_4bit_quant_type="nf4",
-    bnb_4bit_use_double_quant=True,
-    bnb_4bit_compute_dtype=torch.float16,
+device = "cuda" if torch.cuda.is_available() else "cpu"
+
+tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL)
+base_model = AutoModelForSeq2SeqLM.from_pretrained(
+    BASE_MODEL,
+    device_map="auto",
+    torch_dtype=torch.float16 if device == "cuda" else torch.float32
 )
 
-tokenizer = AutoTokenizer.from_pretrained(base_model)
-
-model = AutoModelForSeq2SeqLM.from_pretrained(
-    base_model,
-    quantization_config=bnb_config,
-    device_map="auto"
-)
-
-model = PeftModel.from_pretrained(model, lora_path)
+model = PeftModel.from_pretrained(base_model, LORA_PATH)
 model.eval()
 
-tokenizer.src_lang = "en"
-tokenizer.tgt_lang = "ml"
+def translate_en_to_ml(text: str) -> str:
+    inputs = tokenizer(text, return_tensors="pt").to(device)
 
-text = "I will come tomorrow."
+    with torch.no_grad():
+        outputs = model.generate(
+            **inputs,
+            max_new_tokens=128
+        )
 
-inputs = tokenizer(text, return_tensors="pt").to(model.device)
+    return tokenizer.decode(outputs[0], skip_special_tokens=True)
 
-with torch.no_grad():
-    out = model.generate(**inputs, max_new_tokens=64)
 
-print(tokenizer.decode(out[0], skip_special_tokens=True))
+if __name__ == "__main__":
+    while True:
+        text = input("Enter English: ")
+        print("Malayalam:", translate_en_to_ml(text))
