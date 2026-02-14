@@ -42,7 +42,10 @@ async def voice_translate(file: UploadFile = File(...)):
             try:
                 audio_np, sr = sf.read(tmp_path)
             except Exception as e:
-                print(f"soundfile error: {e}, trying ffmpeg conversion")
+                # If it's a webm file, soundfile failure is expected, so just proceed to ffmpeg
+                if not tmp_path.endswith('.webm'):
+                     print(f"soundfile error: {e}, trying ffmpeg conversion")
+
                 
                 # If soundfile fails, try converting with ffmpeg
                 wav_path = tmp_path.replace(suffix, '.wav')
