@@ -1,6 +1,6 @@
 # CineTranslate AI 🎬🧠
 
-**CineTranslate AI** is an advanced voice-to-voice translation system capable of transcribing English speech and translating it into Malayalam with high accuracy. It leverages state-of-the-art AI models including **OpenAI Whisper** for transcription and a **LoRA fine-tuned M2M100** model for translation, wrapped in a modern, neon-themed React interface.
+**CineTranslate AI** is an advanced voice-to-text translation system capable of transcribing English speech and translating it into Malayalam with high accuracy. It leverages state-of-the-art AI models including **OpenAI Whisper** for transcription and a **LoRA fine-tuned M2M100** model for translation, wrapped in a modern, neon-themed React interface.
 
 ## 🚀 Key Features
 
